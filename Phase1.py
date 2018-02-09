@@ -1,10 +1,14 @@
 from operator import itemgetter
 from datetime import datetime
 
+# Q: Should it be implemented in OOP
+# Todo: using Add exception block for strptime
+# Todo:
+
 URL = None
 # offerings = {cid : [courseDetails]}
-# courseDetails = [CourseCode, Course Title, Credits, [Pre-re(Course Code)], [Exclusion(Course Code], Course Descr, [[sectionDetails](s)]]
 # sectionDetails = [Section Num, DateTime, Room, Instructor, Quota, Enrol, Avail, Wait, Remarks]
+# courseDetails = [CourseCode, Course Title, Credits, [Pre-re(Course Code)], [Exclusion(Course Code], Course Descr, [[sectionDetails](s)]]
 courseOfferings = {'COMP4332L1':
                        ['COMP4332', 'Big Data Mining and Management', 3,[], [], "This is a big data course that teaches problem solving",
                         [['L1', '2018-02-01 15:30', 'G010', 'Prof Raymond', 100, 51, 49, 0,'can take' ]]],
@@ -125,7 +129,7 @@ def waitingListSizePrediction(cc, ln, ts):
     print("n1, n2, n3, n4, n5")
 
 
-#5.5
+# 5.5
 def  waitingListSizeTraining():
     print("Waiting list size training is successful")
 
