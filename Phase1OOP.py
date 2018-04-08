@@ -27,4 +27,3 @@ class Section():
         self.avail = avail
         self.wait = wait
         self.remarks = remarks
-

@@ -2,6 +2,23 @@ from operator import itemgetter
 from datetime import datetime
 import re
 import sys
+import pprint
+import json
+from pymongo import MongoClient
+
+client = MongoClient('mongodb://localhost:27017')
+db = client['courses']
+
+pp = pprint.PrettyPrinter(width = 160, compact=True)
+
+def testing():
+	print('\ntesting here \n')
+
+
+
+def testDbConnection():
+	print("A document of the collection is printed to test the connection")
+	print(db.course.find_one())
 
 
 
@@ -80,7 +97,7 @@ def courseSearch():
 
     # keyword search
     if choice == "1":
-        query = input("Please enter your keyword\n (you may enter \"Data\" for testing)")
+        query = input("Please enter your keyword  (you may enter \"Data\" for testing)")
         keywordSearch(query)
     #waitlist search
     elif choice == "2":
@@ -102,21 +119,44 @@ def courseSearch():
     else:
         print("Please enter a valid choice\n")
 
+def convertToRE(query):
+	keywords = re.sub(r"""[,;.?:'"/\&+-+*!()]""", " ", query).split()
+
+	for index, element in enumerate(keywords):
+		keywords[index] = r"(\s|\b)" + element + r"(\s|\b)"
+
+	query = '|'.join(keywords)
+	return query
+
 def keywordSearch(query):
-    matchedCourses = []
-    keywords = query.split()
-    for keyword in keywords:
-        for course in courseOfferings.values():
-            courseKeywords = course[1].split()
-            for courseKeyword in courseKeywords:
-                if courseKeyword == keyword:
-                    matchedCourses.append(course)
-    matchedCourses = sortCoursesUsingCourseCode(matchedCourses)
-    printAllCourses(matchedCourses)
+    #matchedCourses = []
+    #print(re.sub(r"""[,;.?:'"/\&+-+*!()]""", " ", query).split())
+	query = convertToRE(query)
 
+	results = db.course.aggregate([
+	#match the course according to the specified requirement, we are using regular expression to check if the Cname in the database contains the phrase(s) in the query
+	{'$match': {"Cname": {"$regex": query}}},
+	{'$unwind':"$TimeList"},
+	{'$project': {"Course_Code":1, "Cname":1, "Units":1, "_id":0, "TimeList.timeslot":1, "TimeList.SectionList":1}},
+	#to retrieve the section details in TimeList which has the largest timeslot, we reorder it in descending order
+	#by using the $first operation we get the timeslot with latest date, which contains the most updated information
+	#$first is a feature that returns the value that results from applying an expression to the first document in a group of documents that share the same group by key. Only meaningful when documents are in a defined order.
+	{'$sort':{"Cname":-1,"TimeList.timeslot":-1}},
+	{'$group':{
+		"_id": "$Course_Code",
+		"CourseTitle": {"$first": "$Cname"},
+		"NoOfUnits": {"$first": "$Units"},
+		"TimeSlot": {"$first": "$TimeList.timeslot"},
+		"SectionList": {"$first": "$TimeList.SectionList"}
+		}
+	},
+	#output in the return format as required
+	{'$project': {"_id":1, "CourseTitle":1, "NoOfUnits":1, "MatchedTimeSlot":1, "SectionList.section":1, "SectionList.date_time":1, "SectionList.quota":1, "SectionList.enrol":1, "SectionList.available":1, "SectionList.wait":1}},
+	{'$sort': {"_id":1} }
+	])
 
-def sortCoursesUsingCourseCode(courses):
-    return sorted(courses, key = itemgetter(0))
+	for instance in results:
+		print(instance)
 
 
 def printAllCourses(courses):
@@ -211,4 +251,11 @@ def waitingListSizePrediction(cc, ln, ts):
 def  waitingListSizeTraining():
     print("Waiting list size training is successful")
 
-main()
+
+if __name__ =='__main__':
+	testDbConnection()
+	testing()
+	main()
+
+
+client.close()
