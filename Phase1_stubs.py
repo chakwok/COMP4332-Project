@@ -146,8 +146,8 @@ def printACourse(courseDetails):
 def waitingListSearch(f, start_ts, end_ts):
     matchedCourseDetails = {}
     for courseDetails in courseOfferings.values():
+        match_ts = datetime.strptime(sectionDetails[1], "%Y-%m-%d %H:%M")
         for sectionDetails in courseDetails[6]:
-            match_ts = datetime.strptime(sectionDetails[1], "%Y-%m-%d %H:%M")
             if (sectionDetails[0][0] == 'L') and (start_ts <= match_ts <= end_ts):
                 copyedCourseDetails = courseDetails[:]
                 copyedCourseDetails.append(sectionDetails[1])
