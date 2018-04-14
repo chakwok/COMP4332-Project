@@ -49,7 +49,7 @@ def main():
             dropAndEmptySuccessful()
         elif (choice == '2'):
             data = input("Please input a URL to be crawled or \"default\" ")
-            while (not('www' in data or 'default' in data)):
+            while (not('http' in data or 'default' in data)):
                 data = input("Please input a valid URL or \"dafault\"")
             crawlData(data)
         elif (choice == '3'):

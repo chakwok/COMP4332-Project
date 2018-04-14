@@ -1,0 +1,7 @@
+2018-04-14 16:52:58 [scrapy.core.scraper] ERROR: Spider error processing <GET http://comp4332.com/realistic/> (referer: None)
+Traceback (most recent call last):
+  File "C:\Users\Jerry\Desktop\WinPython-64bit-3.6.3.0Qt5\python-3.6.3.amd64\lib\site-packages\twisted\internet\defer.py", line 653, in _runCallbacks
+    current.result = callback(current.result, *args, **kw)
+  File "C:\Users\Jerry\Desktop\WinPython-64bit-3.6.3.0Qt5\python-3.6.3.amd64\lib\site-packages\scrapy\spiders\__init__.py", line 90, in parse
+    raise NotImplementedError('{}.parse callback is not defined'.format(self.__class__.__name__))
+NotImplementedError: LinkWebpageSpider.parse callback is not defined
