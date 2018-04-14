@@ -480,8 +480,8 @@ def  waitingListSizeTraining():
 
 
 if __name__ =='__main__':
-	testDbConnection()
-	testing()
+	#testDbConnection()
+	#testing()
 	main()
 
 
