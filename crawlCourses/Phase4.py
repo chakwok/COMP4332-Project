@@ -87,8 +87,7 @@ def crawlData(enteredURL):
         print("Default database used")
     else:
         print(enteredURL, "database used")
-    strCommand = 'scrapy crawl crawlCourses -a "urls='+enteredURL+"\""
-	print(strCommand)
+    strCommand = 'scrapy crawl crawlCourse -a "urls='+enteredURL+"\""
     subprocess.run(strCommand, shell=True)
     print("Data Crawling is successful and all data are inserted into the database")
 
