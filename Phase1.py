@@ -1,31 +1,22 @@
 from operator import itemgetter
 from datetime import datetime
 
+# Q: Should it be implemented in OOP
+#done Todo: using Add exception block for strptime
+# Todo:
+
 URL = None
-# offerings = {cid : [courseDetails]}
-# courseDetails = [CourseCode, Course Title, Credits, [Pre-re(Course Code)], [Exclusion(Course Code], Course Descr, [[sectionDetails](s)]]
-# sectionDetails = [Section Num, DateTime, Room, Instructor, Quota, Enrol, Avail, Wait, Remarks]
-courseOfferings = {'COMP4332L1':
-                       ['COMP4332', 'Big Data Mining and Management', 3,[], [], "This is a big data course that teaches problem solving",
-                        [['L1', '2018-02-01 15:30', 'G010', 'Prof Raymond', 100, 51, 49, 0,'can take' ]]],
-                   'RMBI4310L1':
-                       ['RMBI4310', 'Advanced Data Mining for Risk Management and Business Intelligence', 3,[], [], "This is a big data course that teaches problem solving",
-                        [['L1', '2018-02-01 15:30', 'G010', 'Prof Raymond', 100, 52, 48, 0,'can take' ]]],
-                   'COMP4333L1':
-                       ['COMP4333', 'Big Data Mining and Management', 3,[], [], "This is a big data course that teaches problem solving",
-                        [['L1', '2018-02-01 15:30', 'G010', 'Prof Raymond', 100, 51, 49, 0,'can take' ]]]
-                   }
-courses = ["COMP4332" , "ELEC1010", "COMP3221", "Big Data Management", "Dumb Data", "sth"]
-#courses = courseOfferings.keys()
+
 
 
 # 5.1
 def dropAndEmptySuccessful():
+    # checking should be done
     print("Collection dropping and empty collection creating are successful")
 
 # 5.2
 def crawlData(enteredURL):
-    if enteredURL == "default":
+    if enteredURL == 'default':
         print("Data Crawling is successful and all data are inserted into the database")
     else:
         URL = enteredURL
@@ -46,9 +37,18 @@ def courseSearch():
         keywordSearch(query)
     #waitlist search
     elif choice == "2":
-        f = input("Please input f value")
-        start_ts = input("Please input start time (in a format of YYYY-MM-DD HH:mm)")
-        end_ts = input("Please input end time (in a format of YYYY-MM-DD HH:mm)")
+        while True:
+            try:
+                f = input("Please input f value")
+                f = float(f)
+                start_ts = input("Please input start time (in a format of YYYY-MM-DD HH:mm)")
+                start_ts = datetime.strptime(start_ts, "%Y-%m-%d %H:%M")
+                end_ts = input("Please input end time (in a format of YYYY-MM-DD HH:mm)")
+                end_ts = datetime.strptime(end_ts, "%Y-%m-%d %H:%M")
+                break
+            except ValueError:
+                print("Please input all values in correct format")
+
         waitingListSearch(f, start_ts, end_ts)
     else:
         print("Please enter a valid choice\n")
@@ -95,9 +95,7 @@ def printACourse(courseDetails):
 
 # need testing
 def waitingListSearch(f, start_ts, end_ts):
-    f = float(f)
-    start_ts = datetime.strptime(start_ts, "%Y-%m-%d %H:%M")
-    end_ts = datetime.strptime(end_ts, "%Y-%m-%d %H:%M")
+
 
     matchedCourseDetails = {}
     for courseDetails in courseOfferings.values():
@@ -120,12 +118,30 @@ def waitingListSearch(f, start_ts, end_ts):
 def printAllMatched(matchedCourseDetails):
     print(matchedCourseDetails)
 
+
+# offerings = {cid : [courseDetails]}
+# sectionDetails = [Section Num, DateTime, Room, Instructor, Quota, Enrol, Avail, Wait, Remarks]
+# courseDetails = [CourseCode, Course Title, Credits, [Pre-re(Course Code)], [Exclusion(Course Code], Course Descr, [[sectionDetails](s)]]
+courseOfferings = {'COMP4332L1':
+                       ['COMP4332', 'Big Data Mining and Management', 3,[], [], "This is a big data course that teaches problem solving",
+                        [['L1', '2018-02-01 15:30', 'G010', 'Prof Raymond', 100, 51, 49, 0,'can take' ]]],
+                   'RMBI4310L1':
+                       ['RMBI4310', 'Advanced Data Mining for Risk Management and Business Intelligence', 3,[], [], "This is a big data course that teaches problem solving",
+                        [['L1', '2018-02-01 15:30', 'G010', 'Prof Raymond', 100, 52, 48, 0,'can take' ]]],
+                   'COMP4333L1':
+                       ['COMP4333', 'Big Data Mining and Management', 3,[], [], "This is a big data course that teaches problem solving",
+                        [['L1', '2018-02-01 15:30', 'G010', 'Prof Raymond', 100, 51, 49, 0,'can take' ]]]
+                   }
+courses = ["COMP4332" , "ELEC1010", "COMP3221", "Big Data Management", "Dumb Data", "sth"]
+#courses = courseOfferings.keys()
+
+
 # 5.4
 def waitingListSizePrediction(cc, ln, ts):
     print("n1, n2, n3, n4, n5")
 
 
-#5.5
+# 5.5
 def  waitingListSizeTraining():
     print("Waiting list size training is successful")
 
