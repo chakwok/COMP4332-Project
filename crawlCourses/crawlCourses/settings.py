@@ -15,6 +15,17 @@ SPIDER_MODULES = ['crawlCourses.spiders']
 NEWSPIDER_MODULE = 'crawlCourses.spiders'
 
 
+# log to file instead of the console.
+LOG_FILE = 'log.txt'
+
+# only log error messages, ignore irrelevant messages
+# to know more about log levels, see https://doc.scrapy.org/en/latest/topics/logging.html#log-levels
+LOG_LEVEL = 'ERROR'
+
+# does not redirect standard output to the log file
+# i.e., we want the output from the print() method is shown in the console
+LOG_STDOUT = False
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'crawlCourses (+http://www.yourdomain.com)'
 
