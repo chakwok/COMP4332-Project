@@ -23,13 +23,17 @@ class LinkWebpageSpider(scrapy.Spider):
 	
 	def toCourse(self,response):
 		crawlFilename = 'course.txt'
+		
 		#get course list
 		Courses = response.xpath("//div[@class=\"courseanchor\"]/a/@name").extract()
+		
 		#get course title
 		temptitles = response.xpath("//h2/text()").extract()
 		titles = temptitles
 		for i in range(len(temptitles)):
 			titles[i] = temptitles[i][12:-9]
+			
+		#get timeslot and semester from title
 		head = response.xpath("//title/text()").extract_first()
 		date = head[-16:]
 		#get datetime format for timeslot of current snapshot
@@ -37,7 +41,8 @@ class LinkWebpageSpider(scrapy.Spider):
 		#get semester
 		semester = head[0:14]
 		
-		print(len(Courses)==len(titles))
+		
+		
 		'''
 		with open(crawlFilename, "a") as f:
 			for course in Courses:
