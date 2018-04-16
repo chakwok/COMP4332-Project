@@ -29,10 +29,12 @@ class LinkWebpageSpider(scrapy.Spider):
 		
 		#get course title
 		temptitles = response.xpath("//h2/text()").extract()
-		titles = temptitles
+		titles = [None]*len(temptitles)
+		credits = [0]*len(temptitles)
 		for i in range(len(temptitles)):
 			titles[i] = temptitles[i][12:-9]
-			
+			#get course credits
+			credits[i]=int(temptitles[i][-8])
 		#get timeslot and semester from title
 		head = response.xpath("//title/text()").extract_first()
 		date = head[-16:]
@@ -41,6 +43,8 @@ class LinkWebpageSpider(scrapy.Spider):
 		#get semester
 		semester = head[0:14]
 		
+		print(titles)
+		print(credits)
 		
 		
 		'''
