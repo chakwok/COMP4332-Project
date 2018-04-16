@@ -40,9 +40,47 @@ class LinkWebpageSpider(scrapy.Spider):
 				credits[i]=int(temptitles[i][-8])
 			else:
 				credits[i]=int(temptitles[i][-7])
-			#xpathToSections = "//div[@class = \"course\" and ./div/a/@name =\""+Courses[i]+"\"]//table[@class = \"section\"]//tr//td[1]"
-			#Sections = response.xpath("//div[@class = \"course\"]//table[@class = \"sections\"]//tr/td[1]/text()").extract()
-			#print(Sections)
+			#xpathToSections = "//div[@class = \"course\" and ./div/a/@name =\""+Courses[i]+"\"]//table[@class = \"sections\"]//tr//td[1]/text()"
+			
+			
+			#get attributes
+			Attributes = response.xpath("//div[@class = \"course\" and ./div/a/@name =\""+Courses[i]+"\"]//tr[./th=\"ATTRIBUTES\"]//td/text()").extract()
+			tempstring = ""
+			for items in Attributes:
+				tempstring = tempstring + str(items) + "\n"
+			Attributes = tempstring
+			Attributes = Attributes[0:-2]
+			
+			#Other optional attributes
+			Exclusion = response.xpath("//div[@class = \"course\" and ./div/a/@name =\""+Courses[i]+"\"]//tr[./th=\"EXCLUSION\"]//td/text()").extract()
+			tempstring = ""
+			for items in Exclusion:
+				tempstring = tempstring + str(items) + "\n"
+			Exclusion = tempstring
+			Exclusion = Exclusion[0:-1]
+			
+			Description = response.xpath("//div[@class = \"course\" and ./div/a/@name =\""+Courses[i]+"\"]//tr[./th=\"DESCRIPTION\"]//td/text()").extract()
+			Vector = response.xpath("//div[@class = \"course\" and ./div/a/@name =\""+Courses[i]+"\"]//tr[./th=\"VECTOR\"]//td/text()").extract()
+			
+			Pre = response.xpath("//div[@class = \"course\" and ./div/a/@name =\""+Courses[i]+"\"]//tr[./th=\"PRE-REQUISITE\"]//td/text()").extract()
+			tempstring = ""
+			for items in Pre:
+				tempstring = tempstring + str(items) + "\n"
+			Pre = tempstring
+			Pre = Pre[0:-1]
+			
+			Co = response.xpath("//div[@class = \"course\" and ./div/a/@name =\""+Courses[i]+"\"]//tr[./th=\"CO-REQUISITE\"]//td/text()").extract()
+			tempstring = ""
+			for items in Co:
+				tempstring = tempstring + str(items) + "\n"
+			Co = tempstring
+			Co = Co[0:-1]
+			
+			Previous = response.xpath("//div[@class = \"course\" and ./div/a/@name =\""+Courses[i]+"\"]//tr[./th=\"PREVIOUS CODE\"]//td/text()").extract()
+			
+			#Sections = response.xpath("//div[@class = \"course\" and ./div/a/@name =\""+Courses[i]+"\"]//table[@class = \"sections\"]//tr//td/text()").extract()
+			print(Courses[i])
+			print(Exclusion)
 		#get timeslot and semester from title
 		head = response.xpath("//title/text()").extract_first()
 		date = head[-16:]
