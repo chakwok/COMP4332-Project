@@ -5,6 +5,10 @@ from pymongo import MongoClient
 
 client = MongoClient('mongodb://localhost:27017')
 db = client['coursesInsert']
+db.courses.insert({"a":1})
+b = db.courses.find()
+print(db.courses.find().count())
+#print(db.courses.find({"code": courses[i]}).count())
 
 
 class LinkWebpageSpider(scrapy.Spider):
@@ -97,56 +101,67 @@ class LinkWebpageSpider(scrapy.Spider):
 		
 		# get setions
 		Sections = response.xpath("//div[@class = \"course\" and ./div/a/@name =\""+Courses[i]+"\"]//table[@class = \"sections\"]//tr//td//text()").extract()
-		print(Courses[i])
-		print(Sections.index('\xa0'))
+		#print(Courses[i])
+		#print(Sections.index('\xa0'))
 		#if (Sections.index('\xa0') != 8):
 
-		print(Sections)
+		#print(Sections)
 		
-		#enable this part to insert the document after we fix Sections
-		"""
+		#get the first character of \xa0
 		endOfSection = 0 
 		try: 
 			endOfSection = Sections.index('\xa0')
 		except:
 			endOfSection = Sections.index('Instructor Consent Required')
 
-		oneSection = {
-		'recordTime': recordTime,
-		'sectionId': Sections[0],
-		'offerings':[{
-			'dateAndTime': Sections[endOfSection -7],
-			'room': Sections[endOfSection -6],
-			'Instructor': Sections[endOfSection-5],
-		}],
-		'quota': Sections[endOfSection-4],
-		'enrol': Sections[endOfSection -3], 
-		'wait': Sections[endOfSection -1] 
-		}
 
-		oneSection = oneSection.dumps(oneSection)
+		#print(endOfSection)
 
+		while(True):
+
+			oneSection = {
+			'recordTime': recordTime,
+			'sectionId': Sections[0],
+			'offerings':[{
+				'dateAndTime': Sections[endOfSection -7],
+				'room': Sections[endOfSection -6],
+				'Instructor': Sections[endOfSection-5],
+			}],
+			'quota': Sections[endOfSection-4],
+			'enrol': Sections[endOfSection -3], 
+			'wait': Sections[endOfSection -1] 
+			}
+			#print(oneSection)
+			#db.courses.insert(oneSection)
+
+			#oneSection = oneSection.dumps(oneSection)
+
+			#print(oneSection)
+			print(db.courses.find({"code": Courses[i]}).count())
+			# if the course(code) doesn't exist in the database, create a new document with the first section filled
+			if (db.courses.find({"code": Courses[i]}).count() != 1):
+				oneCourse = {
+				"code": Courses[i],
+				"semester": semester,
+				"title": titles[i],
+				"credits": credits[i],
+				"attributes": Attributes,
+				"exclusion": Exclusion, 
+				"description": Description,
+				"sections": [oneSection]
+				}
+					
+				db.courses.insert(oneCourse)
+			else:
+				db.courses.update({"code": Courses[i]},
+					{"$push":{ "sections": oneSection} }
+					)
+
+			if(len(Sections) == endOfSection):
+				break
+			else:
+				del Sections[:endOfSection]
 		
-		# if the course(code) doesn't exist in the database, create a new document with the first section filled
-		if (db.courses.find({"code": courses[i]}).count() != 1):
-			db.courses.insert(
-				{
-					"code": Courses[i],
-					"semester": semester,
-					"title": titles[i],
-					"credits": credits[i],
-					"attributes": Attributes,
-					"exclusion": Exclusion, 
-					"description": Description,
-					"sections": [{
-						oneSection
-					}]
-				})
-		else:
-			db.courses.update({"code": Courses[i]},
-				{"$push":{ "sections": oneSection} }
-				)
-		"""
 
 
 
