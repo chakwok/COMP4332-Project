@@ -111,9 +111,9 @@ class LinkWebpageSpider(scrapy.Spider):
 		#get the first character of \xa0
 		endOfSection = 0 
 		try: 
-			endOfSection = Sections.index('\xa0')
-		except:
 			endOfSection = Sections.index('Instructor Consent Required')
+		except:
+			endOfSection = Sections.index('\xa0')
 
 
 		#print(endOfSection)
