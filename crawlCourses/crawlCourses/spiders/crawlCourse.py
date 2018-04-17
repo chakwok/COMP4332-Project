@@ -5,9 +5,10 @@ from pymongo import MongoClient
 
 client = MongoClient('mongodb://localhost:27017')
 db = client['coursesInsert']
-db.courses.insert({"a":1})
-b = db.courses.find()
-print(db.courses.find().count())
+
+#db.courses.insert({"a":1})
+#b = db.courses.find()
+print("doc in the db = ", db.courses.find().count())
 #print(db.courses.find({"code": courses[i]}).count())
 
 
@@ -157,7 +158,7 @@ class LinkWebpageSpider(scrapy.Spider):
 					{"$push":{ "sections": oneSection} }
 					)
 
-			if(len(Sections) == endOfSection):
+			if((len(Sections)-1) == endOfSection):
 				break
 			else:
 				del Sections[:endOfSection]
