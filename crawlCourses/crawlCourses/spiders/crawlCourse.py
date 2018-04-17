@@ -1,5 +1,11 @@
 import scrapy
 from datetime import datetime
+import json
+from pymongo import MongoClient
+
+client = MongoClient('mongodb://localhost:27017')
+db = client['coursesInsert']
+
 
 class LinkWebpageSpider(scrapy.Spider):
 	name = "crawlCourses"
@@ -26,7 +32,7 @@ class LinkWebpageSpider(scrapy.Spider):
 		
 		#get course list
 		Courses = response.xpath("//div[@class=\"courseanchor\"]/a/@name").extract()
-		
+		#print(Courses)
 		Description = response.xpath("//tr[th= \"DESCRIPTION\"]//td/text()").extract()
 		
 		#get course title
@@ -79,8 +85,8 @@ class LinkWebpageSpider(scrapy.Spider):
 			Previous = response.xpath("//div[@class = \"course\" and ./div/a/@name =\""+Courses[i]+"\"]//tr[./th=\"PREVIOUS CODE\"]//td/text()").extract()
 			
 			#Sections = response.xpath("//div[@class = \"course\" and ./div/a/@name =\""+Courses[i]+"\"]//table[@class = \"sections\"]//tr//td/text()").extract()
-			print(Courses[i])
-			print(Exclusion)
+			#print(Courses[i])
+			#print(Exclusion)
 		#get timeslot and semester from title
 		head = response.xpath("//title/text()").extract_first()
 		date = head[-16:]
@@ -89,7 +95,76 @@ class LinkWebpageSpider(scrapy.Spider):
 		#get semester
 		semester = head[0:14]
 		
+		# get setions
+		Sections = response.xpath("//div[@class = \"course\" and ./div/a/@name =\""+Courses[i]+"\"]//table[@class = \"sections\"]//tr//td//text()").extract()
+		print(Courses[i])
+		print(Sections.index('\xa0'))
+		#if (Sections.index('\xa0') != 8):
+
+		print(Sections)
 		
+		#enable this part to insert the document after we fix Sections
+		"""
+		endOfSection = 0 
+		try: 
+			endOfSection = Sections.index('\xa0')
+		except:
+			endOfSection = Sections.index('Instructor Consent Required')
+
+		oneSection = {
+		'recordTime': recordTime,
+		'sectionId': Sections[0],
+		'offerings':[{
+			'dateAndTime': Sections[endOfSection -7],
+			'room': Sections[endOfSection -6],
+			'Instructor': Sections[endOfSection-5],
+		}],
+		'quota': Sections[endOfSection-4],
+		'enrol': Sections[endOfSection -3], 
+		'wait': Sections[endOfSection -1] 
+		}
+
+		oneSection = oneSection.dumps(oneSection)
+
+		
+		# if the course(code) doesn't exist in the database, create a new document with the first section filled
+		if (db.courses.find({"code": courses[i]}).count() != 1):
+			db.courses.insert(
+				{
+					"code": Courses[i],
+					"semester": semester,
+					"title": titles[i],
+					"credits": credits[i],
+					"attributes": Attributes,
+					"exclusion": Exclusion, 
+					"description": Description,
+					"sections": [{
+						oneSection
+					}]
+				})
+		else:
+			db.courses.update({"code": Courses[i]},
+				{"$push":{ "sections": oneSection} }
+				)
+		"""
+
+
+
+		#to add multiple sections of a same course we need a while true loop to surround the above code
+		"""
+		while True:
+			if (len(Sections) == endOfSection):
+				break
+
+			else:
+				del Sections[:endOfSection]
+		"""
+
+		#print(Sections)
+		#print(Courses[1])
+
+
+		#print(Sections)
 		
 		'''
 		with open(crawlFilename, "a") as f:
