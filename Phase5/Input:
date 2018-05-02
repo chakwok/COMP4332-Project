@@ -8,27 +8,44 @@ The extraction of docuement from the mongo will be done using the pymongodb libr
 By iterating through the CommandCursor object(using a for loop), we can extract all the individual documents. As documents in mongodb behave like a json object, the input attribute that we want can be extracted simply by {jsonObject}['{attribute}'].
 
 The output csv will be in a format of:
-<code> <
+<code> <Semester> <title> <credits> <exclusion> <recordTime> <sectionId> <offerings> <quota> <enrol> <wait>
 
 *Missing value will be filled by averaging the nearest 3 values 
+
+
 
 Model 1: Baseline Prediction Model 1
 This model will be used to set as the baseline of any prediction. 
 
 Type: A system that takes the previous one entry and return it as the result of the prediction
 
+Input Attribute: 
+	waiting list size to "train"
+
+Output Attribute:
+	Accuracy
+
+
+
+Model 2: Baseline Prediction Model 2 
+Type: Moving Average (look_back = 3)
+The model serves a similar purpose as baseline model, but it would go a step further to understand how to previous data points would affect the accuracy
+
+Type: A system that takes the previous 3 data points and average them as the prediction results
 
 Input Attribute: 
+	waiting list size to "train"
+
 Output Attribute:
+	Accuracy
 
-Model 
-Type: Moving Average
 
-Model 1: Neural Network
+
+Model 3: Neural Network (with no look_back)
 
 	Input Attribute: 
 	1. Enrol against time
-	2. Number of class per week
+	2. Quota against time
 
 
 	Neural Network Model Parameter
@@ -49,13 +66,76 @@ Model 1: Neural Network
 		Training/Validation/Test: 0.8/ 0/ 0.2
 
 	Output Attribute:
-	waiting list size
+	Accuracy
+
+
+
+Model 4: Neural Network (with look_back = 3 )
+
+	Input Attribute: 
+	1. Enrol against time
+		1.1 past 1
+		1.2 past 2 
+		1.3 past 3
+	2. Quota against time
+		2.1 past 1 
+		2.2 past 2 
+		2.3 past 3 
+
+
+	Neural Network Model Parameter
+		No. of layers: 3
+		No. of neurons in each layer: 2, 12, 1
+		Connection between neurons from different layers: fully connected
+		Activation Function: Rectifier Function
+		Optimization Method:
+		Error Function: Root mean square error
+
+
+	Training (Time) Parameter
+		No of epochs: 150
+		Batch size: 10 
+
+	Evaluation
+		Measurement: Accuracy
+		Training/Validation/Test: 0.8/ 0/ 0.2
+
+	Output Attribute:
+	Accuracy
 
 
 
 
 
+Model 5: Neural Network (with look_back = 3 and significantly more training flexibility)
+
+	Input Attribute: 
+	1. Enrol against time
+		1.1 past 1
+		1.2 past 2 
+		1.3 past 3
+	2. Quota against time
+		2.1 past 1 
+		2.2 past 2 
+		2.3 past 3 
 
 
+	Neural Network Model Parameter
+		No. of layers: 5
+		No. of neurons in each layer: 2, 30, 30, 30, 1
+		Connection between neurons from different layers: fully connected
+		Activation Function: Rectifier Function
+		Optimization Method:
+		Error Function: Root mean square error
 
 
+	Training (Time) Parameter
+		No of epochs: 500
+		Batch size: 10
+
+	Evaluation
+		Measurement: Accuracy
+		Training/Validation/Test: 0.8/ 0/ 0.2
+
+	Output Attribute:
+	Accuracy
