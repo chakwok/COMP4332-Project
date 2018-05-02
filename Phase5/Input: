@@ -1,0 +1,61 @@
+Design Report
+
+
+
+Querying and Transformation 
+The extraction of docuement from the mongo will be done using the pymongodb library. To get the course info(e.g. course title, course quota/ waiting list size at different timeslots), we would use the aggregate() function provided by Mongodb to return a CommandCursor object.
+
+By iterating through the CommandCursor object(using a for loop), we can extract all the individual documents. As documents in mongodb behave like a json object, the input attribute that we want can be extracted simply by {jsonObject}['{attribute}'].
+
+The output csv will be in a format of:
+<code> <
+
+*Missing value will be filled by averaging the nearest 3 values 
+
+Model 1: Baseline Prediction Model 1
+This model will be used to set as the baseline of any prediction. 
+
+Type: A system that takes the previous one entry and return it as the result of the prediction
+
+
+Input Attribute: 
+Output Attribute:
+
+Model 
+Type: Moving Average
+
+Model 1: Neural Network
+
+	Input Attribute: 
+	1. Enrol against time
+	2. Number of class per week
+
+
+	Neural Network Model Parameter
+		No. of layers: 3
+		No. of neurons in each layer: 2, 12, 1
+		Connection between neurons from different layers: fully connected
+		Activation Function: Rectifier Function
+		Optimization Method:
+		Error Function: Root mean square error
+
+
+	Training (Time) Parameter
+		No of epochs: 150
+		Batch size: 10 
+
+	Evaluation
+		Measurement: Accuracy
+		Training/Validation/Test: 0.8/ 0/ 0.2
+
+	Output Attribute:
+	waiting list size
+
+
+
+
+
+
+
+
+
